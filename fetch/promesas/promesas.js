@@ -2,6 +2,7 @@ const normal = document.getElementById("normal")
 const promesa = document.getElementById("promesa")
 const app = document.getElementById("app")
 const asyncAwait = document.getElementById("asyncawait")
+const btnFetch = document.getElementById("btnFetch")
 
 const saludar = (name) => {
     /** 
@@ -64,4 +65,29 @@ asyncAwait.addEventListener("click", async () => {
         write(`Error: ${error}`)
     }
     console.log(`Termino el proceso...`)
+})
+
+//?Claro que este metodo tambien puede usar awaitAsync para esperar a que la funcion acabe para continuar
+btnFetch.addEventListener("click",async () => {
+    //!EndPoint donde agarraremos los datos y luego como los trataremos, en este caso como un json, pero esto devuelve otra promesa por lo que hay volver a capturar un posible error con .then() y .catch()
+    // fetch("http://localhost:5500")
+    // .then(response => response.json())
+    // .then(response => console.log(response))
+    // .catch(error => console.log(error))
+
+    //Usando await
+    try {
+        //*Podemos consultar el estatus de la respuesta por parte del fetch()
+        const response = await fetch("http://localhost:5500")
+        //!Le estamos diciendo si el status de la respuesta es diferente a un codigo 200 (OK) entonces realice lo siguiente:
+        if(response.status !== 200) {
+            const message = await response.text() //Ya dependiendo como puedes recibir el mensaje, como texto plano o JSON
+            console.log(`Algo salio mal! ${message}`)
+            return
+        }
+        const data = await response.json()
+        console.log(data)
+    }catch(error) {
+        console.error(`Error no recibimos ningun JSON: ${error}`)
+    }
 })
